@@ -5,6 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add ToDoContext to services
+builder.Services.AddDbContext<ToDoContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,6 +39,42 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
+
+// Add API endpoints for ToDoItem
+app.MapPost("/todo", async (ToDoContext context, ToDoItem toDoItem) =>
+{
+    context.ToDoItems.Add(toDoItem);
+    await context.SaveChangesAsync();
+    return Results.Created($"/todo/{toDoItem.Id}", toDoItem);
+});
+
+app.MapPut("/todo/{id}", async (ToDoContext context, int id, ToDoItem updatedToDoItem) =>
+{
+    var toDoItem = await context.ToDoItems.FindAsync(id);
+    if (toDoItem == null)
+    {
+        return Results.NotFound();
+    }
+
+    toDoItem.Title = updatedToDoItem.Title;
+    toDoItem.IsComplete = updatedToDoItem.IsComplete;
+
+    await context.SaveChangesAsync();
+    return Results.NoContent();
+});
+
+app.MapDelete("/todo/{id}", async (ToDoContext context, int id) =>
+{
+    var toDoItem = await context.ToDoItems.FindAsync(id);
+    if (toDoItem == null)
+    {
+        return Results.NotFound();
+    }
+
+    context.ToDoItems.Remove(toDoItem);
+    await context.SaveChangesAsync();
+    return Results.NoContent();
+});
 
 app.Run();
 
