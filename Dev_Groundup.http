@@ -1,0 +1,6 @@
+@Dev_Groundup_HostAddress = http://localhost:5049
+
+GET {{Dev_Groundup_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
