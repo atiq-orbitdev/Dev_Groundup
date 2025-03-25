@@ -9,6 +9,6 @@ namespace Dev_Groundup.Data
         {
         }
 
-        public DbSet<ToDoItem> ToDoItems { get; set; }
+        public DbSet<ToDoItem>? ToDoItem { get; set; }
     }
 }
