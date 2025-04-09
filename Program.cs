@@ -65,7 +65,7 @@ app.MapPost("/todo", async (ToDoContext context, ToDoItem toDoItem) =>
     }
     context.ToDoItem.Add(toDoItem);
     await context.SaveChangesAsync();
-    return Results.Created($"/todo/{toDoItem.Id}", toDoItem);
+    return Results.Ok(toDoItem); // Changed to return Ok response
 });
 
 app.MapPut("/todo/{id}", async (ToDoContext context, int id, ToDoItem updatedToDoItem) =>
@@ -84,7 +84,7 @@ app.MapPut("/todo/{id}", async (ToDoContext context, int id, ToDoItem updatedToD
     toDoItem.IsComplete = updatedToDoItem.IsComplete;
 
     await context.SaveChangesAsync();
-    return Results.NoContent();
+    return Results.Ok(toDoItem); // Changed to return Ok response
 });
 
 app.MapDelete("/todo/{id}", async (ToDoContext context, int id) =>
@@ -102,7 +102,7 @@ app.MapDelete("/todo/{id}", async (ToDoContext context, int id) =>
 
     context.ToDoItem.Remove(toDoItem!);
     await context.SaveChangesAsync();
-    return Results.NoContent();
+    return Results.Ok(toDoItem); // Changed to return Ok response
 });
 
 app.MapGet("/todo/incomplete", async (ToDoContext context) =>
