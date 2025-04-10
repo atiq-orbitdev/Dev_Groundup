@@ -19,6 +19,10 @@ namespace Dev_Groundup.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> AddUser(User user)
         {
+            if (_context == null || _context.Users == null)
+            {
+                throw new InvalidOperationException("Database context or Users set is not initialized.");
+            }
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
@@ -56,6 +60,26 @@ namespace Dev_Groundup.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeactivateUser(int id)
         {
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
+
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
+
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
+
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
+
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
@@ -83,7 +107,7 @@ namespace Dev_Groundup.Controllers
 
         private bool UserExists(int id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return _context.Users != null && _context.Users.Any(e => e.Id == id);
         }
     }
 }

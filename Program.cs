@@ -21,11 +21,22 @@ builder.Services.AddSwaggerGen();
 
 // Add ToDoContext to services
 builder.Services.AddDbContext<ToDoContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                           ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    options.UseSqlServer(connectionString);
+});
 
 // Add UserContext to services
 builder.Services.AddDbContext<UserContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                           ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    options.UseSqlServer(connectionString);
+});
+
+// Add API controllers to the pipeline
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -123,9 +134,16 @@ app.MapGet("/todo/incomplete", async (ToDoContext context) =>
     return Results.Ok(incompleteItems);
 });
 
+// Map controllers
+app.MapControllers();
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
+
+// No changes are required to the code for starting debugging.
+// To start debugging in Visual Studio Code, use the `Run and Debug` panel or press `F5`.
+// Ensure you have a proper `launch.json` configuration for your project.
